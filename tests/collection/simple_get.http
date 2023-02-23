@@ -1,1 +1,1 @@
-GET https://httpbin.org/ip
+GET https://httpbin.org/user-agent

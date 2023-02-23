@@ -1,6 +1,7 @@
 use std::fs::File;
 use std::io::BufRead;
 use std::io::BufReader;
+use std::path::Path;
 
 use regex::Regex;
 use reqwest::Response;
@@ -34,8 +35,8 @@ impl HttpResponse {
     }
 }
 
-pub fn parse() -> Result<HttpRequest, Box<dyn std::error::Error>> {
-    let file = File::open("tests/collection/simple_get.http")?;
+pub fn parse<P: AsRef<Path>>(path: P) -> Result<HttpRequest, Box<dyn std::error::Error>> {
+    let file = File::open(path)?;
     let lines = BufReader::new(file).lines();
 
     let mut http_req = HttpRequest::new();
@@ -65,11 +66,13 @@ pub async fn request(http_req: HttpRequest) -> Result<HttpResponse, Box<dyn std:
     Ok(http_res)
 }
 
-pub async fn execute() -> Result<(), Box<dyn std::error::Error>> {
-    let http_req = parse()?;
+pub async fn execute<P: AsRef<Path>>(path: P) -> Result<HttpResponse, Box<dyn std::error::Error>> {
+    let http_req = parse(path)?;
     let http_res = request(http_req).await?;
 
-    println!("{:?}", http_res);
+    Ok(http_res)
+}
 
-    Ok(())
+pub fn display(http_res: HttpResponse) {
+    println!("{:?}", http_res);
 }
