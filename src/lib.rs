@@ -41,14 +41,20 @@ pub fn parse<P: AsRef<Path>>(path: P) -> Result<HttpRequest, Box<dyn std::error:
     let lines = BufReader::new(file).lines();
 
     let mut http_req = HttpRequest::new();
-    let re = Regex::new(r"\s*(\S+)\s*(\S+)").unwrap();
+    let request_regex = Regex::new(r"\s*(\S+)\s*(\S+)").unwrap();
+    let comment_regex = Regex::new(r"\s*#").unwrap();
 
     for line in lines {
         let line = line.unwrap();
 
-        if let Some(cap) = re.captures_iter(&line).next() {
+        if comment_regex.is_match(&line) {
+            continue;
+        }
+
+        if let Some(cap) = request_regex.captures_iter(&line).next() {
             http_req.method = Some(cap[1].to_string());
             http_req.url = Some(cap[2].to_string());
+            continue;
         }
     }
 
