@@ -42,7 +42,7 @@ pub fn parse<P: AsRef<Path>>(path: P) -> Result<HttpRequest, Box<dyn std::error:
 
     let mut http_req = HttpRequest::new();
     let request_regex = Regex::new(r"\s*(\S+)\s*(\S+)").unwrap();
-    let comment_regex = Regex::new(r"\s*#").unwrap();
+    let comment_regex = Regex::new(r"\s*(#|\\/\\/)").unwrap();
 
     for line in lines {
         let line = line.unwrap();
