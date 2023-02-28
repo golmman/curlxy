@@ -6,6 +6,7 @@ use std::path::Path;
 use regex::Regex;
 use reqwest::Response;
 
+#[derive(Debug)]
 pub struct HttpRequest {
     pub method: Option<String>,
     pub url: Option<String>,
@@ -40,7 +41,7 @@ pub fn parse<P: AsRef<Path>>(path: P) -> Result<HttpRequest, Box<dyn std::error:
     let lines = BufReader::new(file).lines();
 
     let mut http_req = HttpRequest::new();
-    let re = Regex::new(r"\s*(\S*)\s*(\S*)").unwrap();
+    let re = Regex::new(r"\s*(\S+)\s*(\S+)").unwrap();
 
     for line in lines {
         let line = line.unwrap();
@@ -68,6 +69,7 @@ pub async fn request(http_req: HttpRequest) -> Result<HttpResponse, Box<dyn std:
 
 pub async fn execute<P: AsRef<Path>>(path: P) -> Result<HttpResponse, Box<dyn std::error::Error>> {
     let http_req = parse(path)?;
+    println!("{http_req:?}");
     let http_res = request(http_req).await?;
 
     Ok(http_res)
