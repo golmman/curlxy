@@ -1,5 +1,9 @@
 # curlxy
 
+discontinued because https://hurl.dev/ exists
+
+---
+
 inspiration: https://github.com/shivkanthb/curlx
 
 
